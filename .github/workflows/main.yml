@@ -6,6 +6,11 @@ on:
       - 'v1'
       - 'v*'
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Release tag to create/use when manually triggered'
+        required: false
+        default: 'v1'
 
 permissions:
   contents: write
@@ -67,6 +72,7 @@ jobs:
       - name: 创建 Release 并上传 exe
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.release_tag || github.ref_name }}
           files: EPLLMv1.exe
         env:
           GITHUB_TOKEN:  ${{ secrets.GITHUB_TOKEN }}
